@@ -21,6 +21,14 @@ terminology:
   min_frequency: 100
   pos_tags: [NOUN, PROPN]
 
+synthetic:
+  qa_pairs_per_doc: 3
+  instructions_per_doc: 2
+  include_term_definitions: true
+  quality_filter:
+    min_length: 50
+    min_quality_score: 0.3
+
 evaluation:
   benchmarks:
     - name: bar_exam
@@ -38,3 +46,6 @@ evaluation:
       - mmlu
       - hellaswag
     max_drop: 0.05
+
+  terminology:
+    min_term_recall: 0.3

@@ -1,0 +1,21 @@
+legal:
+  benchmarks:
+    - name: bar_exam
+      dataset: mmlu
+      subset: professional_law
+      metric: accuracy
+      passing_threshold: 0.7
+    - name: contract_analysis
+      dataset: local
+      path: data/benchmarks/contract_analysis.jsonl
+      metric: f1
+      passing_threshold: 0.8
+
+  retention:
+    benchmarks:
+      - name: mmlu
+        subsets: [all]
+        metric: accuracy
+      - name: hellaswag
+        metric: accuracy
+    max_drop: 0.05

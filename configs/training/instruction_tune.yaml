@@ -1,0 +1,41 @@
+stage: instruction
+
+model:
+  base_model: meta-llama/Meta-Llama-3-8B-Instruct
+  torch_dtype: bfloat16
+  attn_implementation: flash_attention_2
+  gradient_checkpointing: true
+  load_in_4bit: true
+
+data:
+  domain_weight: 1.0
+  general_weight: 0.0
+  max_length: 2048
+  packing: false
+
+optimizer:
+  name: adamw
+  learning_rate: 1e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  lr_scheduler: cosine
+
+lora:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+  bias: none
+  task_type: CAUSAL_LM
+
+training:
+  num_epochs: 3
+  batch_size: 4
+  gradient_accumulation_steps: 4
+  max_steps: -1
+  save_steps: 500
+  logging_steps: 10
+  eval_steps: 500
+
+output_dir: models/legal-instruct
+wandb_project: domain-adapt

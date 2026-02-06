@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "domain-adapt-toolkit"
+version = "0.1.0"
+description = "Domain-specific LLM fine-tuning framework for adapting foundation models to professional domains"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.2.0",
+    "transformers>=4.38.0",
+    "peft>=0.8.0",
+    "trl>=0.7.0",
+    "accelerate>=0.27.0",
+    "bitsandbytes>=0.42.0",
+    "datasets>=2.17.0",
+    "spacy>=3.7.0",
+    "pydantic>=2.5.0",
+    "pyyaml>=6.0",
+    "wandb>=0.16.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.3.0",
+    "mypy>=1.8.0",
+    "pytest>=8.0.0",
+    "pre-commit>=3.6.0",
+]
+eval = [
+    "lm-eval>=0.4.0",
+    "rouge-score>=0.1.2",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --tb=short"

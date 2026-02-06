@@ -1,0 +1,40 @@
+name: legal
+description: Legal domain adaptation for contract analysis and case law reasoning
+
+corpus:
+  sources:
+    - name: pile-of-law
+      type: case_law
+      categories: [opinions, contracts, regulations]
+    - name: sec_contracts
+      type: contracts
+      categories: [merger, employment, licensing]
+
+  quality_filters:
+    min_length: 500
+    max_length: 50000
+    language: en
+    dedup_threshold: 0.85
+
+terminology:
+  method: tfidf_ner_hybrid
+  min_frequency: 100
+  pos_tags: [NOUN, PROPN]
+
+evaluation:
+  benchmarks:
+    - name: bar_exam
+      weight: 0.3
+      passing_threshold: 0.7
+    - name: contract_analysis
+      weight: 0.4
+      passing_threshold: 0.8
+    - name: case_reasoning
+      weight: 0.3
+      passing_threshold: 0.75
+
+  retention:
+    benchmarks:
+      - mmlu
+      - hellaswag
+    max_drop: 0.05

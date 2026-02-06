@@ -253,14 +253,24 @@ def run_pipeline(args: argparse.Namespace) -> PipelineResult:
         logger.info("\n[Stage 4/4] Evaluating model...")
         eval_report.parent.mkdir(parents=True, exist_ok=True)
 
+        # Determine base model for evaluation
+        base_model = args.base_model
+        if not base_model:
+            # Try to read from training config
+            training_config_path = model_dir / "training_config.json"
+            if training_config_path.exists():
+                with open(training_config_path) as f:
+                    training_config = json.load(f)
+                base_model = training_config.get("model", {}).get("base_model")
+
         cmd = [
             sys.executable, "scripts/evaluate_domain.py",
             "--model", result.model_path,
             "--domain", args.domain,
             "--output", str(eval_report),
         ]
-        if args.base_model:
-            cmd.extend(["--base-model", args.base_model])
+        if base_model:
+            cmd.extend(["--base-model", base_model])
 
         success, error = run_command(cmd, args.dry_run)
         if not success:

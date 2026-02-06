@@ -92,13 +92,32 @@ def load_sft_dataset(data_path: str | Path, tokenizer, max_length: int = 2048):
 
 
 def _format_chat_for_sft(example: dict, tokenizer) -> str:
-    """Apply the tokenizer's chat template to a messages list."""
+    """Apply the tokenizer's chat template to a messages list.
+
+    Falls back to simple formatting if tokenizer has no chat template.
+    """
     messages = example["messages"]
-    return tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=False,
-    )
+
+    # Check if tokenizer has a chat template
+    if hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None:
+        return tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=False,
+        )
+
+    # Fallback: simple text formatting for tokenizers without chat templates
+    parts = []
+    for msg in messages:
+        role = msg["role"]
+        content = msg["content"]
+        if role == "system":
+            parts.append(f"System: {content}\n")
+        elif role == "user":
+            parts.append(f"User: {content}\n")
+        elif role == "assistant":
+            parts.append(f"Assistant: {content}\n")
+    return "".join(parts)
 
 
 def run_sft(
@@ -155,7 +174,7 @@ def run_sft(
         run_name=f"{config.wandb_project}-sft",
         remove_unused_columns=False,
         dataloader_pin_memory=True,
-        max_seq_length=config.data.max_length,
+        max_length=config.data.max_length,
         packing=config.data.packing,
         dataset_text_field="text",
     )

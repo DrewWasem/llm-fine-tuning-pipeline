@@ -178,6 +178,7 @@ def load_model_for_inference(
             base_model=base_model,
             load_in_4bit=load_in_4bit,
             gradient_checkpointing=False,
+            attn_implementation="eager",  # Safe default for inference
         )
         loaded = load_model(config)
         logger.info("Loading PEFT adapter from: %s", model_path)
@@ -189,5 +190,6 @@ def load_model_for_inference(
             base_model=str(model_path),
             load_in_4bit=load_in_4bit,
             gradient_checkpointing=False,
+            attn_implementation="eager",  # Safe default for inference
         )
         return load_model(config)

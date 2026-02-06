@@ -84,6 +84,10 @@ def train(args: argparse.Namespace) -> None:
     if args.base_model:
         config.model.base_model = args.base_model
 
+    # Override max_steps from CLI
+    if args.max_steps:
+        config.training.max_steps = args.max_steps
+
     output_dir = Path(config.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -194,6 +198,10 @@ def main():
     parser.add_argument(
         "--merge", action="store_true",
         help="Merge LoRA adapter into base model after training",
+    )
+    parser.add_argument(
+        "--max-steps", type=int,
+        help="Maximum training steps (overrides config max_steps)",
     )
 
     args = parser.parse_args()
